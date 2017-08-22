@@ -1,3 +1,3 @@
 # DongoJS - TODOMVC
 
-[http://example.dongoteam.hu/todomvc|Demo]
+[Demo](http://example.dongoteam.hu/todomvc)
