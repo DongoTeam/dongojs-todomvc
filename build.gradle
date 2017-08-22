@@ -1,0 +1,55 @@
+group 'org.dongoteam'
+version '1.0.0-SNAPSHOT'
+
+buildscript {
+    ext.kotlin_version = '1.1.4-2'
+
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+apply plugin: 'kotlin2js'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
+    compile "org.dongoteam:dongojs:1.0.0-SNAPSHOT"
+}
+
+
+compileKotlin2Js {
+    kotlinOptions.sourceMap = true
+    kotlinOptions.metaInfo = true
+    kotlinOptions.outputFile = "$projectDir/out/js/index.js"
+    kotlinOptions.suppressWarnings = true
+    //kotlinOptions.verbose = true
+}
+
+build.doLast {
+    configurations.compile.each { File file ->
+        copy {
+            includeEmptyDirs = false
+
+            from zipTree(file.absolutePath)
+            into "${projectDir}/out/js"
+            include { fileTreeElement ->
+                def path = fileTreeElement.path
+                path.endsWith(".js") && (path.startsWith("META-INF/resources/") || !path.startsWith("META-INF/"))
+            }
+        }
+    }
+}
+build.doLast {
+    copy {
+        from file("$projectDir/src/main/web/index.html")
+        into "$projectDir/out"
+    }
+}
